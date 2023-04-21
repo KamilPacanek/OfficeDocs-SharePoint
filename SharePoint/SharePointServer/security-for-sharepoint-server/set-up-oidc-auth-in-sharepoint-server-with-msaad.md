@@ -44,8 +44,8 @@ This article uses the following example values for Azure AD OIDC setup:
 
 Perform the following steps to set up OIDC with Azure AD:
 
-1. Select **New Registration**.
-2. Go to the **Register an application** page `https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps`.
+1. Go to the **Register an application** page `https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps`.
+2. Select **New Registration**.
 3. Enter the following value for **Redirect URL**: `https://spsites.contoso.local/` and select **Register**.
 
     :::image type="content" source="../media/register-an-app.PNG" alt-text="Register an application":::
@@ -70,6 +70,9 @@ Perform the following steps to set up OIDC with Azure AD:
 
     :::image type="content" source="../media/sharepoint-oidc-manifest.png" alt-text="Manifest":::
 
+> [!NOTE]
+> This is the Redirect URL that can be seen in **Authentication** tab - but the required URL ends with `*` so it can't be accepted as a valid URL. Remember about this when making furthter changes in the UI on the **Authentication** tab.
+
 9. Get OIDC authentication information from OIDC discovery endpoint.
 
 In Azure AD, there are two versions of OIDC authentication endpoints. Therefore, there are two versions of OIDC discovery endpoints respectively:
@@ -86,7 +89,7 @@ Replace TenantID with the **Directory (tenant) ID** saved in the third step ment
 |---------|---------|
 | authorization_endpoint | `https://login.microsoftonline.com/<tenantid>/oauth2/authorize` |
 | end_session_endpoint   | `https://login.microsoftonline.com/<tenantid>/oauth2/logout` |
-| issuer     | `https://sts.windows.net/<tenantid>/` |
+| issuer     | `https://login.microsoftonline.com/<tenantid>/v2.0` |
 | jwks_uri     | `https://login.microsoftonline.com/common/discovery/keys` |
 
 Open jwks_uri (`https://login.microsoftonline.com/common/discovery/keys`) and save the **x5c** certificate string of the first key for later use in SharePoint setup (if the first key doesn’t work, try the second or third key).
@@ -149,7 +152,7 @@ $encodedCertStr = <x5c cert string>
 $signingCert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 @(,[System.Convert]::FromBase64String($encodedCertStr))
 # Set the AAD OIDC URL where users are redirected to authenticate. Please replace <tenantid> accordingly
 $authendpointurl = "https://login.microsoftonline.com/<tenantid>/oauth2/authorize"
-$registeredissuernameurl = " https://sts.windows.net/<tenantid>/"
+$registeredissuernameurl = "https://login.microsoftonline.com/<tenantid>/v2.0/"
 $signouturl = " https://login.microsoftonline.com/<tenantid>/oauth2/logout"
 
 # Please replace <Application (Client) ID> with the value saved in step #3 in AAD setup section
@@ -205,10 +208,10 @@ $email = New-SPClaimTypeMapping "http://schemas.xmlsoap.org/ws/2005/05/identity/
 $metadataendpointurl = "https://login.microsoftonline.com/<TenantID>/.well-known/openid-configuration"
 
 # Please replace <Application (Client) ID> with the value saved in step #3 in AAD setup section
-$clientIdentifier = <Application (Client)ID>
+$clientIdentifier = "Application (Client) ID>"
 
 # Create a new SPTrustedIdentityTokenIssuer in SharePoint
-New-SPTrustedIdentityTokenIssuer -Name "contoso.local" -Description "contoso.local" -ClaimsMappings $email -IdentifierClaim $email.InputClaimType  -DefaultClientIdentifier $clientIdentifier -MetadataEndPoint $ metadataendpointurl
+New-SPTrustedIdentityTokenIssuer -Name "contoso.local" -Description "contoso.local" -ClaimsMappings $email -IdentifierClaim $email.InputClaimType  -DefaultClientIdentifier $clientIdentifier -MetadataEndPoint $metadataendpointurl
 ```
 
 | Parameter | Description |
