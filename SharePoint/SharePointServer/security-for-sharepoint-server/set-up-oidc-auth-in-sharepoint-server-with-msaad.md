@@ -381,6 +381,13 @@ An example of this command is:
   $claimprovider = Get-SPClaimProvider -Identity "UPATest"
   Set-SPTrustedIdentityTokenIssuer "ADFS Provider" -ClaimProvider $claimprovider -IsOpenIDConnect
   ```
+> [!NOTE]
+> You can ensure that the Claim Provider was set on the Token Issuer by running following command.
+> 
+> ```powershell
+> Get-SPTrustedIdentityTokenIssuer |? {$_.Name -eq "contoso.local"} | select {$_.ClaimProviderName}
+> ```
+> `ClaimProviderName` should not be empty and show the display name of the Claim Provider created in the previous instruction.
 
 ### 3. Synchronize profiles to user profile service application
 
