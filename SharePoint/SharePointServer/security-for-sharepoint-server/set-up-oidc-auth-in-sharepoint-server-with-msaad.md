@@ -66,12 +66,12 @@ Perform the following steps to set up OIDC with Azure AD:
 
     :::image type="content" source="../media/sharepoint-oidc-token-configuration.png" alt-text="Token Configuration":::
 
-8. Go to the **Manifest** tab, and manually change **replyUrlsWithType** from `https://spsites.contoso.local/` to `https://spsites.contoso.local/*`. Then select **Save**.
+8. Go to the **Manifest** tab, and manually change **replyUrlsWithType** from `https://spsites.contoso.local/` to `https://spsites.contoso.local/*/_layouts/15/Authenticate.aspx`. Then select **Save**.
 
     :::image type="content" source="../media/sharepoint-oidc-manifest.png" alt-text="Manifest":::
 
 > [!NOTE]
-> This is the Redirect URL that can be seen in **Authentication** tab - but the required URL ends with `*` so it can't be accepted as a valid URL. Remember about this when making furthter changes in the UI on the **Authentication** tab.
+> This is the Redirect URL that can be seen in **Authentication** tab - but the required URL contains wildcard (`*`) so it can't be accepted as a valid URL. Remember about this when making changes in the UI on the **Authentication** tab in the future. You can read more about it [here](https://learn.microsoft.com/en-us/azure/active-directory/develop/reply-url#restrictions-on-wildcards-in-redirect-uris).
 
 9. Get OIDC authentication information from OIDC discovery endpoint.
 
